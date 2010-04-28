@@ -163,6 +163,24 @@ class MobileRequestHandlerComponentTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		$this->_init();
+		$_SERVER['HTTP_USER_AGENT'] = 'Googlebot-Mobile';
+		$this->MobileRequestHandler->initialize($this->Controller);
+		$this->assertTrue($this->MobileRequestHandler->isMobile());
+		$this->assertEqual($this->MobileRequestHandler->carrier, 'crawler');
+
+		$this->_init();
+		$_SERVER['HTTP_USER_AGENT'] = 'Y!J-SRD/1.0';
+		$this->MobileRequestHandler->initialize($this->Controller);
+		$this->assertTrue($this->MobileRequestHandler->isMobile());
+		$this->assertEqual($this->MobileRequestHandler->carrier, 'crawler');
+
+		$this->_init();
+		$_SERVER['HTTP_USER_AGENT'] = 'Y!J-MBS/1.0';
+		$this->MobileRequestHandler->initialize($this->Controller);
+		$this->assertTrue($this->MobileRequestHandler->isMobile());
+		$this->assertEqual($this->MobileRequestHandler->carrier, 'crawler');
+
+		$this->_init();
 		$_SERVER['HTTP_USER_AGENT'] = 'IE';
 		$this->MobileRequestHandler->initialize($this->Controller);
 		$this->assertFalse($this->MobileRequestHandler->isMobile());
