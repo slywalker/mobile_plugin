@@ -195,5 +195,20 @@ class MobileRequestHandlerComponentTest extends CakeTestCase {
 		$this->assertFalse($this->MobileRequestHandler->isMobile());
 		$this->assertEqual($this->MobileRequestHandler->carrier, null);
 	}
+
+	function testInitializeCallbackConvert() {
+		$this->_init();
+		$_SERVER['HTTP_USER_AGENT'] = 'DoCoMo/2.0 P903i';
+		
+		$this->Controller->data = $data = array('Post' => array('title' => 'タイトル', 'body' => '本文'));
+		mb_convert_variables($this->MobileRequestHandler->settings['encoding'], Configure::read('App.encoding'), $this->Controller->data);
+		
+		$this->Controller->passedArgs = $passedArgs = array('hoge' => 'ほげ', 'fuga' => 'ふが', 'ふー', 'ばー');
+		mb_convert_variables($this->MobileRequestHandler->settings['encoding'], Configure::read('App.encoding'), $this->Controller->passedArgs);
+		
+		$this->MobileRequestHandler->initialize($this->Controller);
+		$this->assertEqual($this->Controller->data, $data);
+		$this->assertEqual($this->Controller->passedArgs, $passedArgs);
+	}
 }
 ?>
