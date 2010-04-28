@@ -163,6 +163,15 @@ class MobileRequestHandlerComponentTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		$this->_init();
+		$_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 2_0 like Mac OS X; ja-jp) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5A347 Safari/525.20';
+		$this->MobileRequestHandler->initialize($this->Controller, array('iphone' => false));
+		$this->assertFalse($this->MobileRequestHandler->isMobile());
+		$this->assertEqual($this->MobileRequestHandler->carrier, null);
+		$result = $this->Controller->params['resolution'];
+		$expected = array('width' => 240, 'height' => 320);
+		$this->assertEqual($result, $expected);
+
+		$this->_init();
 		$_SERVER['HTTP_USER_AGENT'] = 'Googlebot-Mobile';
 		$this->MobileRequestHandler->initialize($this->Controller);
 		$this->assertTrue($this->MobileRequestHandler->isMobile());
