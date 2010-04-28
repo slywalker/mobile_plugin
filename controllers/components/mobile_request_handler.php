@@ -33,7 +33,7 @@ class MobileRequestHandlerComponent extends Object {
 		$this->settings = array_merge($this->settings, $settings);
 		$this->userAgent = env('HTTP_USER_AGENT');
 		$this->isMobile = $controller->params['isMobile'] = $this->isMobile();
-		$controller->params['resolution'] = $this->getResolution();
+		$this->resolution = $controller->params['resolution'] = $this->getResolution();
 		
 		if ($this->isMobile()) {
 			$this->__session($controller);
@@ -155,11 +155,11 @@ class MobileRequestHandlerComponent extends Object {
 	function getResolution() {
 		if ($carrier = $this->getCarrier()) {
 			$width = $height = null;
-			if ($carrier === 'softbank') {
-				list($width, $height) = explode("*", env('HTTP_X_JPHONE_DISPLAY'));
+			if ($carrier === 'softbank' && strpos(env('HTTP_X_JPHONE_DISPLAY'), '*')) {
+				list($width, $height) = explode('*', env('HTTP_X_JPHONE_DISPLAY'));
 			}
-			elseif ($carrier === 'kddi') {
-				list($width, $height) = explode(",", env('HTTP_X_UP_DEVCAP_SCREENPIXELS'));
+			elseif ($carrier === 'kddi' && strpos(env('HTTP_X_UP_DEVCAP_SCREENPIXELS'), ',')) {
+				list($width, $height) = explode(',', env('HTTP_X_UP_DEVCAP_SCREENPIXELS'));
 			}
 			
 			if ((int) $width && (int) $height) {
