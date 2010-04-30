@@ -210,5 +210,25 @@ class MobileRequestHandlerComponentTest extends CakeTestCase {
 		$this->assertEqual($this->Controller->data, $data);
 		$this->assertEqual($this->Controller->passedArgs, $passedArgs);
 	}
+
+	function testShutdown() {
+		$this->_init();
+		$_SERVER['HTTP_USER_AGENT'] = 'DoCoMo/2.0 P903i';
+		$this->Controller->params['url']['ext'] = 'html';
+		$this->MobileRequestHandler->initialize($this->Controller);
+		$this->Controller->output = $expected = '
+はひふへほハヒフヘホ
+ばびぶべぼバビブベボ
+ぱぴぷぺぽパピプペポ
+１２３４５６７８９０
+<a href="/posts/index">Posts Index</a>
+<img src="img/image.jpg" />
+<form action"/posts/add">
+';
+		$this->MobileRequestHandler->shutdown($this->Controller);
+		$expected = mb_convert_kana($expected, $this->MobileRequestHandler->settings['kana'], Configure::read('App.encoding'));
+		$expected = mb_convert_encoding($expected, $this->MobileRequestHandler->settings['encoding'], Configure::read('App.encoding'));
+		$this->assertEqual($this->Controller->output, $expected);
+	}
 }
 ?>
